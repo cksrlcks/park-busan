@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import Spinner from "./Spinner";
+import { Button } from "./ui/button";
 
 type ParkDataResponse = {
   lastFetchedAt: string;
@@ -67,11 +68,21 @@ export default function Parking() {
             </TabsTrigger>
           ))}
 
-          <div className="text-sm text-muted-foreground text-right w-full pt-4">
-            최근 조회 :{" "}
-            {new Date(lastFetchedAt).toLocaleString("ko-KR", {
-              timeZone: "Asia/Seoul",
-            })}
+          <div className="flex w-full items-center justify-between pt-4">
+            <Button
+              onClick={() => refetch()}
+              disabled={isFetching}
+              variant="outline"
+              size="sm"
+            >
+              {isFetching ? <Spinner className="text-black w-4 h-4" /> : "새로고침"}
+            </Button>
+            <div className="text-sm text-muted-foreground">
+              최근 조회 :{" "}
+              {new Date(lastFetchedAt).toLocaleString("ko-KR", {
+                timeZone: "Asia/Seoul",
+              })}
+            </div>
           </div>
         </TabsList>
 
@@ -87,17 +98,7 @@ export default function Parking() {
               </ul>
             </TabsContent>
           ))}
-        </div>
-
-        <div className="fixed bottom-2 w-full max-w-[240px] left-1/2 -translate-x-1/2 px-4">
-          <button
-            onClick={() => refetch()}
-            disabled={isFetching}
-            className="bg-black w-full flex h-10 cursor-pointer text-white rounded-sm text-md items-center justify-center"
-          >
-            {isFetching ? <Spinner /> : "새로고침"}
-          </button>
-        </div>
+        </div>       
       </Tabs>
     </div>
   );
