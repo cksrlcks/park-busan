@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import Spinner from "./Spinner";
 
 type ParkDataResponse = {
   lastFetchedAt: string;
@@ -19,11 +20,9 @@ export default function Parking() {
   useEffect(() => {
     if (!sentinelRef.current) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsSticky(!entry.isIntersecting);
-      },
-    );
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsSticky(!entry.isIntersecting);
+    });
 
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
@@ -38,12 +37,18 @@ export default function Parking() {
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex flex-col items-center justify-center py-40 gap-4">
+        <Spinner className="text-black" />
+        <span className="text-muted-foreground text-sm">공영주차장 데이터를 불러오는중입니다</span>
+      </div>
+    );
   if (!data) return <div>No data</div>;
 
   const { lastFetchedAt, data: ParkData } = data;
   const firstKey = Object.keys(ParkData)[0];
-  console.log(isSticky);
+
   return (
     <>
       <div ref={sentinelRef} />
@@ -88,30 +93,7 @@ export default function Parking() {
             disabled={isFetching}
             className="bg-black w-full flex h-10 cursor-pointer text-white rounded-sm text-md items-center justify-center"
           >
-            {isFetching ? (
-              <svg
-                className="size-5 animate-spin text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-            ) : (
-              "새로고침"
-            )}
+            {isFetching ? <Spinner /> : "새로고침"}
           </button>
         </div>
       </Tabs>
