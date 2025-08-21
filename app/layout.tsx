@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="ko" className=" scrollbar-hide">
       <body className="antialiased">
         <QueryProvider>
-          <div className="max-w-md mx-auto w-full py-10 px-4">{children}</div>
+          <div className="max-w-md mx-auto w-full py-10">{children}</div>
         </QueryProvider>
       </body>
     </html>

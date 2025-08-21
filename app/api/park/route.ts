@@ -25,7 +25,10 @@ export async function GET() {
       return acc;
     }, {});
 
-    return NextResponse.json(grouped, {
+    return NextResponse.json({
+      lastFetchedAt: new Date().toISOString(),
+      data: grouped,
+    }, {
       status: 200,
     });
   } catch (error) {
