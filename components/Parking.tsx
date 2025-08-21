@@ -17,17 +17,6 @@ export default function Parking() {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const [isSticky, setIsSticky] = useState(false);
 
-  useEffect(() => {
-    if (!sentinelRef.current) return;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      setIsSticky(!entry.isIntersecting);
-    });
-
-    observer.observe(sentinelRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   const { data, isLoading, isFetching, refetch } = useQuery<ParkDataResponse>({
     queryKey: ["park"],
     queryFn: async () => {
@@ -37,11 +26,24 @@ export default function Parking() {
     },
   });
 
+  useEffect(() => {
+    if (!sentinelRef.current || !data) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsSticky(!entry.isIntersecting);
+    });
+
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [data]);
+
   if (isLoading)
     return (
       <div className="flex flex-col items-center justify-center py-40 gap-4">
         <Spinner className="text-black" />
-        <span className="text-muted-foreground text-sm">공영주차장 데이터를 불러오는중입니다</span>
+        <span className="text-muted-foreground text-sm">
+          공영주차장 데이터를 불러오는중입니다
+        </span>
       </div>
     );
   if (!data) return <div>No data</div>;
@@ -50,13 +52,13 @@ export default function Parking() {
   const firstKey = Object.keys(ParkData)[0];
 
   return (
-    <>
+    <div>
       <div ref={sentinelRef} />
       <Tabs defaultValue={firstKey}>
         <TabsList
           className={cn(
             "sticky px-4 top-0 z-10 bg-white py-3 rounded-none",
-            isSticky && "border-b border-gray-100 shadow-xs"
+            isSticky && "border-b border-gray-100"
           )}
         >
           {Object.keys(ParkData).map((addr) => (
@@ -97,6 +99,6 @@ export default function Parking() {
           </button>
         </div>
       </Tabs>
-    </>
+    </div>
   );
 }
