@@ -1,5 +1,5 @@
-import { ParkItem } from "@/types";
 import { NextResponse } from "next/server";
+import { ParkItem } from "@/types";
 
 export async function GET() {
   try {
@@ -7,7 +7,7 @@ export async function GET() {
       "https://bsparking.bisco.or.kr/api/parking/realtime/list",
       {
         method: "GET",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -25,12 +25,15 @@ export async function GET() {
       return acc;
     }, {});
 
-    return NextResponse.json({
-      lastFetchedAt: new Date().toISOString(),
-      data: grouped,
-    }, {
-      status: 200,
-    });
+    return NextResponse.json(
+      {
+        lastFetchedAt: new Date().toISOString(),
+        data: grouped,
+      },
+      {
+        status: 200,
+      },
+    );
   } catch (error) {
     return NextResponse.json(
       {
@@ -39,7 +42,7 @@ export async function GET() {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

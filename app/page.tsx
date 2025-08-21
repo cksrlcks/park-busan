@@ -1,12 +1,15 @@
 import Parking from "@/components/Parking";
+import StickyProvider from "@/context/StickyProvider";
 
 export default function Home() {
   return (
     <div>
-      <h1 className="text-center font-semibold text-lg mb-3">
+      <h1 className="mb-3 text-center text-lg font-semibold">
         부산공영주차장 주차가능 현황
       </h1>
-      <Parking />
+      <StickyProvider>
+        <Parking />
+      </StickyProvider>
     </div>
   );
 }

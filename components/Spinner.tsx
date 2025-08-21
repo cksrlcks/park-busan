@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export default function Spinner({ className } :{className?: string}) {
+export default function Spinner({ className }: { className?: string }) {
   return (
     <svg
       className={cn("size-5 animate-spin text-white", className)}
