@@ -1,41 +1,3 @@
-export type GradeAmount = {
-  gradeAmountId: number;
-  gradeInfoName: string;
-  revision: number;
-  turnTime: number;
-  freeTime: number;
-  defaultTime: number;
-  defaultAmount: number;
-  intervalTime: number;
-  intervalAmount: number;
-  employeeAmount: number;
-  eventAmount: number;
-  dayParkingAmount: number;
-  periodTicketAmount: number;
-  periodDayTimeAmount: number;
-  periodNightAmount: number;
-  periodTransTicketAmount: number;
-  periodTransDayTimeAmount: number;
-  periodTransNightAmount: number;
-  periodSecondAmount: number;
-};
-
-export type GradeInfo = {
-  dayType: "WEEK" | "SAT" | "SUN" | "HOLI";
-  gradeAmountId: number;
-  gradeBigId: number;
-  gradeNightId: number;
-  gradePeakId: number;
-  parkingId: number;
-  simpleYn: "Y" | "N";
-  startTime: string | null;
-  endTime: string | null;
-  gradeAmount: GradeAmount;
-  bigGradeAmount: GradeAmount;
-  nightGradeAmount: GradeAmount;
-  peakGradeAmount: GradeAmount;
-};
-
 export type ParkItem = {
   periodTicketAmount: number;
   periodDayTimeAmount: number;
@@ -43,7 +5,7 @@ export type ParkItem = {
   periodTransTicketAmount: number;
   periodTransDayTimeAmount: number;
   periodTransNightAmount: number;
-  gradeInfoList: GradeInfo[];
+  gradeInfoList?: unknown;
   periodUseDivisionCode: string;
   periodAllotType: string;
   parkingDivisionCode: string;
