@@ -1,15 +1,18 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect, useState } from "react";
 import { unstable_ViewTransition as ViewTransition } from "react";
-import Link from "next/link";
-import { notFound, useRouter } from "next/navigation";
-import { ChevronLeftIcon, RefreshCwIcon } from "lucide-react";
-import ParkItem from "@/components/ParkItem";
-import ParkMap from "@/components/ParkMap";
-import Spinner from "@/components/Spinner";
-import { Button } from "@/components/ui/button";
-import useParkQuery from "@/hooks/useParkQuery";
+import { notFound } from "next/navigation";
+import Loading from "@/components/Loading";
+import ParkDetail from "@/components/ParkDetail";
+import ParkHeader from "@/components/ParkHeader";
+import useParkQuery, { ParkDataResponse } from "@/hooks/useParkQuery";
+
+const getParkDataWithId = (data: ParkDataResponse["data"], id: number) => {
+  return Object.values(data)
+    .flat()
+    .find((item) => item.parkingId === id);
+};
 
 export default function ParkPage({
   params,
@@ -18,61 +21,45 @@ export default function ParkPage({
 }) {
   const { id } = use(params);
   const { data, isLoading, isFetching, refetch } = useParkQuery();
-  const router = useRouter();
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  if (isLoading) return <div>Loading...</div>;
+  useEffect(() => {
+    if (!data) return;
+    const stored = JSON.parse(localStorage.getItem("favorites") || "[]");
+    setIsFavorite(stored.includes(Number(id)));
+  }, [data, id]);
+
+  const handleFavorite = (parkingId: number) => {
+    const stored = JSON.parse(localStorage.getItem("favorites") || "[]");
+    let updated: number[];
+
+    if (stored.includes(parkingId)) {
+      updated = stored.filter((id: number) => id !== parkingId);
+    } else {
+      updated = [...stored, parkingId];
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(updated));
+    setIsFavorite(updated.includes(parkingId));
+  };
+
+  if (isLoading) return <Loading>주차장 정보를 가져오는 중입니다.</Loading>;
   if (!data) return <div>No data available</div>;
 
-  const { lastFetchedAt, data: parkList } = data;
-
-  const parkData = Object.values(parkList)
-    .flat()
-    .find((park) => park.parkingId === Number(id));
-
+  const { data: parkList } = data;
+  const parkData = getParkDataWithId(parkList, Number(id));
   if (!parkData) notFound();
 
   return (
     <ViewTransition>
-      <div className="mb-4 flex items-center justify-between">
-        <Button type="button" variant="outline" size="icon" asChild>
-          <Link href="/">
-            <ChevronLeftIcon />
-          </Link>
-        </Button>
-
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          onClick={() => refetch()}
-          disabled={isFetching}
-        >
-          {isFetching ? (
-            <Spinner className="h-4 w-4 text-black" />
-          ) : (
-            <RefreshCwIcon />
-          )}
-        </Button>
-      </div>
-      <div className="bg-muted mb-4 flex aspect-video items-center justify-center overflow-hidden rounded-md">
-        {/* <ParkMap lat={parkData.lat} lng={parkData.lng} /> */}
-        <span className="text-muted-foreground text-sm">
-          지도API 심사 대기중
-        </span>
-      </div>
-      <div className="mb-4">
-        <ParkItem item={parkData} />
-      </div>
-      <ul className="text-sm">
-        <li>
-          <span>전화번호:</span>
-          <span>{parkData.telNo}</span>
-        </li>
-        <li>
-          <span>주차면수:</span>
-          <span>{parkData.cellCount}</span>
-        </li>
-      </ul>
+      <ParkHeader
+        title={parkData.parkingName}
+        isFavorite={isFavorite}
+        onFavorite={() => handleFavorite(Number(id))}
+        onRefetch={refetch}
+        isFetching={isFetching}
+      />
+      <ParkDetail park={parkData} />
     </ViewTransition>
   );
 }

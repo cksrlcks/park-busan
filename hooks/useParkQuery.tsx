@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ParkItem } from "@/types";
 
-type ParkDataResponse = {
+export type ParkDataResponse = {
   lastFetchedAt: string;
   data: Record<string, ParkItem[]>;
 };
