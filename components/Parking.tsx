@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Map } from "lucide-react";
+import { useFavoriteStore } from "@/app/stores/useFavoriteStore";
 import { useTabStore } from "@/app/stores/useTabStore";
 import ParkItem from "@/components/ParkItem";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,27 +12,25 @@ import { useStickyContext } from "@/context/StickyProvider";
 import useParkQuery from "@/hooks/useParkQuery";
 import { cn } from "@/lib/utils";
 import Loading from "./Loading";
+import MapList from "./MapList";
 import Spinner from "./Spinner";
 import { Button } from "./ui/button";
 
 export default function Parking() {
   const { data, isLoading, isFetching, refetch } = useParkQuery();
   const { isSticky } = useStickyContext();
-  const [favorites, setFavorites] = useState<number[]>([]);
   const { lastTab, setLastTab } = useTabStore();
-
-  useEffect(() => {
-    const storedFavorites = localStorage.getItem("favorites");
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
-    }
-  }, [data]);
+  const { favorites } = useFavoriteStore();
+  const [isMapView, setIsMapView] = useState(false);
 
   if (isLoading) return <Loading>공영주차장 데이터를 불러오는중입니다</Loading>;
   if (!data) return notFound();
 
   const { lastFetchedAt, data: ParkData } = data;
   const firstKey = lastTab || Object.keys(ParkData)[0];
+  const favoriteParks = Object.values(ParkData)
+    .flat()
+    .filter((park) => favorites.includes(park.parkingId));
 
   return (
     <div>
@@ -58,19 +58,32 @@ export default function Parking() {
           </TabsTrigger>
 
           <div className="flex w-full items-center justify-between pt-4">
-            <Button
-              onClick={() => refetch()}
-              disabled={isFetching}
-              variant="outline"
-              size="sm"
-            >
-              {isFetching ? (
-                <Spinner className="h-4 w-4 text-black" />
-              ) : (
-                "새로고침"
-              )}
-            </Button>
-            <div className="text-muted-foreground text-sm">
+            <div className="flex items-center gap-1">
+              <Button
+                onClick={() => refetch()}
+                disabled={isFetching}
+                variant="outline"
+                size="sm"
+              >
+                {isFetching ? (
+                  <Spinner className="h-4 w-4 text-black" />
+                ) : (
+                  "새로고침"
+                )}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className={cn(
+                  isMapView && "border-blue-300 bg-blue-100/50 text-blue-700",
+                )}
+                onClick={() => setIsMapView((prev) => !prev)}
+              >
+                <Map />
+                지도
+              </Button>
+            </div>
+            <div className="text-muted-foreground text-xs tracking-tight">
               최근 조회 :{" "}
               {new Date(lastFetchedAt).toLocaleString("ko-KR", {
                 timeZone: "Asia/Seoul",
@@ -83,28 +96,33 @@ export default function Parking() {
           {Object.entries(ParkData).map(([addr, parks]) => (
             <TabsContent key={addr} value={addr} className="pb-10">
               <ul className="space-y-2">
-                {parks.map((park) => (
-                  <li key={park.parkingId}>
-                    <Link href={`/park/${park.parkingId}`}>
-                      <ParkItem item={park} />
-                    </Link>
-                  </li>
-                ))}
+                {isMapView ? (
+                  <MapList parks={parks} />
+                ) : (
+                  parks.map((park) => (
+                    <li key={park.parkingId}>
+                      <Link href={`/park/${park.parkingId}`}>
+                        <ParkItem park={park} />
+                      </Link>
+                    </li>
+                  ))
+                )}
               </ul>
             </TabsContent>
           ))}
           <TabsContent value="favorites" className="pb-10">
             <ul className="space-y-2">
-              {Object.values(ParkData)
-                .flat()
-                .filter((park) => favorites.includes(park.parkingId))
-                .map((park) => (
+              {isMapView ? (
+                <MapList parks={favoriteParks} />
+              ) : (
+                favoriteParks.map((park) => (
                   <li key={park.parkingId}>
                     <Link href={`/park/${park.parkingId}`}>
-                      <ParkItem item={park} />
+                      <ParkItem park={park} />
                     </Link>
                   </li>
-                ))}
+                ))
+              )}
             </ul>
           </TabsContent>
         </div>

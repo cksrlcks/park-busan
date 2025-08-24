@@ -23,18 +23,16 @@ export default function ParkDetail({ park }: ParkDetailProps) {
 
   return (
     <>
-      <div className="bg-muted mb-4 flex aspect-video items-center justify-center overflow-hidden rounded-md">
-        <ParkMap lat={park.lat} lng={park.lng} />
-      </div>
+      <ParkMap park={park} />
       <div className="mb-4">
-        <ParkItem item={park} />
+        <ParkItem park={park} />
       </div>
       <div>
-        <h3 className="text-muted-foreground/60 mb-4 flex items-center text-sm">
+        <h3 className="mb-4 flex items-center text-sm font-medium tracking-tight">
           🚗 주차장 정보
         </h3>
       </div>
-      <ul className="space-y-1 text-sm">
+      <ul className="space-y-1 text-sm tracking-tight">
         {infoData.map((item) => (
           <li key={item.label} className="flex justify-between">
             <span className="text-muted-foreground text-sm">{item.label}</span>
@@ -42,8 +40,8 @@ export default function ParkDetail({ park }: ParkDetailProps) {
           </li>
         ))}
       </ul>
-      <Separator className="my-3" />
-      <ul className="space-y-1 text-sm">
+      <Separator className="my-3 bg-gray-100" />
+      <ul className="space-y-1 text-sm tracking-tight">
         {countData.map((item) => (
           <li key={item.label} className="flex justify-between">
             <span className="text-muted-foreground text-sm">{item.label}</span>

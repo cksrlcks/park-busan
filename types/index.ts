@@ -48,3 +48,9 @@ export type ParkItem = {
   quarter: number;
   usingMonth: number;
 };
+
+export type ParkingStatus = {
+  key: "available" | "normal" | "crowded" | "veryCrowded" | "full";
+  label: "여유" | "보통" | "혼잡" | "매우 혼잡" | "만차";
+  range: [number, number];
+};

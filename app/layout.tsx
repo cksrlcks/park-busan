@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import MapProvider from "@/context/MapProvider";
 import QueryProvider from "../context/QueryProvider";
 import "./globals.css";
 
@@ -14,10 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className="scrollbar-hide">
-      <head></head>
       <body className="antialiased">
         <QueryProvider>
-          <div className="mx-auto w-full max-w-md py-10">{children}</div>
+          <MapProvider>
+            <div className="mx-auto w-full max-w-md py-10">{children}</div>
+          </MapProvider>
         </QueryProvider>
       </body>
     </html>

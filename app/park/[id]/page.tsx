@@ -1,8 +1,9 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use } from "react";
 import { unstable_ViewTransition as ViewTransition } from "react";
 import { notFound } from "next/navigation";
+import { useFavoriteStore } from "@/app/stores/useFavoriteStore";
 import Loading from "@/components/Loading";
 import ParkDetail from "@/components/ParkDetail";
 import ParkHeader from "@/components/ParkHeader";
@@ -21,26 +22,16 @@ export default function ParkPage({
 }) {
   const { id } = use(params);
   const { data, isLoading, isFetching, refetch } = useParkQuery();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { favorites, addFavorite, removeFavorite } = useFavoriteStore();
 
-  useEffect(() => {
-    if (!data) return;
-    const stored = JSON.parse(localStorage.getItem("favorites") || "[]");
-    setIsFavorite(stored.includes(Number(id)));
-  }, [data, id]);
+  const isFavorite = favorites.includes(Number(id));
 
   const handleFavorite = (parkingId: number) => {
-    const stored = JSON.parse(localStorage.getItem("favorites") || "[]");
-    let updated: number[];
-
-    if (stored.includes(parkingId)) {
-      updated = stored.filter((id: number) => id !== parkingId);
+    if (isFavorite) {
+      removeFavorite(parkingId);
     } else {
-      updated = [...stored, parkingId];
+      addFavorite(parkingId);
     }
-
-    localStorage.setItem("favorites", JSON.stringify(updated));
-    setIsFavorite(updated.includes(parkingId));
   };
 
   if (isLoading) return <Loading>주차장 정보를 가져오는 중입니다.</Loading>;
