@@ -20,9 +20,9 @@ export async function GET() {
     const { data } = (await response.json()) as { data: ParkItem[] };
 
     const grouped = data.reduce<Record<string, ParkItem[]>>((acc, park) => {
-      if (!acc[park.addr]) acc[park.addr] = [];
+      if (!acc[park.sigunguName]) acc[park.sigunguName] = [];
       const { gradeInfoList, ...rest } = park;
-      acc[park.addr].push(rest);
+      acc[park.sigunguName].push(rest);
       return acc;
     }, {});
 

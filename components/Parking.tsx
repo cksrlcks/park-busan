@@ -41,15 +41,17 @@ export default function Parking() {
             isSticky && "border-b border-gray-100",
           )}
         >
-          {Object.keys(ParkData).map((addr) => (
-            <TabsTrigger
-              key={addr}
-              value={addr}
-              onClick={() => setLastTab(addr)}
-            >
-              {addr}
-            </TabsTrigger>
-          ))}
+          {Object.keys(ParkData)
+            .sort((a, b) => a.localeCompare(b))
+            .map((addr) => (
+              <TabsTrigger
+                key={addr}
+                value={addr}
+                onClick={() => setLastTab(addr)}
+              >
+                {addr}
+              </TabsTrigger>
+            ))}
           <TabsTrigger
             value="favorites"
             onClick={() => setLastTab("favorites")}
