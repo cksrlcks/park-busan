@@ -43,14 +43,16 @@ export default function ParkPage({
 
   return (
     <ViewTransition>
-      <ParkHeader
-        title={parkData.parkingName}
-        isFavorite={isFavorite}
-        onFavorite={() => handleFavorite(Number(id))}
-        onRefetch={refetch}
-        isFetching={isFetching}
-      />
-      <ParkDetail park={parkData} />
+      <div className="px-4">
+        <ParkHeader
+          title={parkData.parkingName}
+          isFavorite={isFavorite}
+          onFavorite={() => handleFavorite(Number(id))}
+          onRefetch={refetch}
+          isFetching={isFetching}
+        />
+        <ParkDetail park={parkData} />
+      </div>
     </ViewTransition>
   );
 }
