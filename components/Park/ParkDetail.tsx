@@ -1,7 +1,5 @@
 import { ParkItem as ParkItemType } from "@/types";
-import ParkItem from "./ParkItem";
-import ParkMap from "./ParkMap";
-import { Separator } from "./ui/separator";
+import { Separator } from "../ui/separator";
 
 type ParkDetailProps = {
   park: ParkItemType;
@@ -23,15 +21,9 @@ export default function ParkDetail({ park }: ParkDetailProps) {
 
   return (
     <>
-      <ParkMap park={park} />
-      <div className="mb-4">
-        <ParkItem park={park} />
-      </div>
-      <div>
-        <h3 className="mb-4 flex items-center text-sm font-medium tracking-tight">
-          🚗 주차장 정보
-        </h3>
-      </div>
+      <h3 className="mb-4 flex items-center text-sm font-medium tracking-tight">
+        주차장 정보
+      </h3>
       <ul className="space-y-1 text-sm tracking-tight">
         {infoData.map((item) => (
           <li key={item.label} className="flex justify-between">

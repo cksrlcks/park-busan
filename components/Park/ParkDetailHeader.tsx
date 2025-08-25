@@ -1,8 +1,8 @@
 import Link from "next/link";
 import clsx from "clsx";
 import { ChevronLeftIcon, RefreshCwIcon, Star } from "lucide-react";
-import Spinner from "./Spinner";
-import { Button } from "./ui/button";
+import Spinner from "../Spinner";
+import { Button } from "../ui/button";
 
 type ParkHeaderProps = {
   title: string;

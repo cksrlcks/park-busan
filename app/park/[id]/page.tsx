@@ -5,8 +5,10 @@ import { unstable_ViewTransition as ViewTransition } from "react";
 import { notFound } from "next/navigation";
 import { useFavoriteStore } from "@/app/stores/useFavoriteStore";
 import Loading from "@/components/Loading";
-import ParkDetail from "@/components/ParkDetail";
-import ParkHeader from "@/components/ParkHeader";
+import ParkMap from "@/components/Map/ParkMap";
+import ParkDetail from "@/components/Park/ParkDetail";
+import ParkHeader from "@/components/Park/ParkDetailHeader";
+import ParkItem from "@/components/Park/ParkItem";
 import useParkQuery, { ParkDataResponse } from "@/hooks/useParkQuery";
 
 const getParkDataWithId = (data: ParkDataResponse["data"], id: number) => {
@@ -51,6 +53,10 @@ export default function ParkPage({
           onRefetch={refetch}
           isFetching={isFetching}
         />
+        <ParkMap park={parkData} />
+        <div className="mb-5">
+          <ParkItem park={parkData} />
+        </div>
         <ParkDetail park={parkData} />
       </div>
     </ViewTransition>

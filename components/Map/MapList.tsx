@@ -27,7 +27,7 @@ export default function MapList({ parks }: MapListProps) {
     }
   });
 
-  const isSmall = parks.length < 5;
+  const isSmall = parks.length < 3;
   const smallCenter = isSmall
     ? getCenterLatLng(
         parks

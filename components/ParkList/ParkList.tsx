@@ -1,22 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Map } from "lucide-react";
 import { useFavoriteStore } from "@/app/stores/useFavoriteStore";
 import { useTabStore } from "@/app/stores/useTabStore";
-import ParkItem from "@/components/ParkItem";
+import ParkItem from "@/components/Park/ParkItem";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useStickyContext } from "@/context/StickyProvider";
 import useParkQuery from "@/hooks/useParkQuery";
 import { cn } from "@/lib/utils";
-import Loading from "./Loading";
-import MapList from "./MapList";
-import Spinner from "./Spinner";
-import { Button } from "./ui/button";
+import Loading from "../Loading";
+import MapList from "../Map/MapList";
+import Spinner from "../Spinner";
+import { Button } from "../ui/button";
 
-export default function Parking() {
+export default function ParkList() {
   const { data, isLoading, isFetching, refetch } = useParkQuery();
   const { isSticky } = useStickyContext();
   const { lastTab, setLastTab } = useTabStore();
@@ -32,8 +32,13 @@ export default function Parking() {
     .flat()
     .filter((park) => favorites.includes(park.parkingId));
 
+  const parkList = [
+    ...Object.entries(ParkData),
+    ["favorites", favoriteParks] as [string, typeof favoriteParks],
+  ];
+
   return (
-    <div>
+    <>
       <Tabs defaultValue={firstKey}>
         <TabsList
           className={cn(
@@ -95,40 +100,25 @@ export default function Parking() {
         </TabsList>
 
         <div className="px-4">
-          {Object.entries(ParkData).map(([addr, parks]) => (
+          {parkList.map(([addr, parks]) => (
             <TabsContent key={addr} value={addr} className="pb-10">
-              <ul className="space-y-2">
-                {isMapView ? (
-                  <MapList parks={parks} />
-                ) : (
-                  parks.map((park) => (
+              {isMapView ? (
+                <MapList parks={parks} />
+              ) : (
+                <ul className="space-y-2">
+                  {parks.map((park) => (
                     <li key={park.parkingId}>
                       <Link href={`/park/${park.parkingId}`}>
                         <ParkItem park={park} />
                       </Link>
                     </li>
-                  ))
-                )}
-              </ul>
+                  ))}
+                </ul>
+              )}
             </TabsContent>
           ))}
-          <TabsContent value="favorites" className="pb-10">
-            <ul className="space-y-2">
-              {isMapView ? (
-                <MapList parks={favoriteParks} />
-              ) : (
-                favoriteParks.map((park) => (
-                  <li key={park.parkingId}>
-                    <Link href={`/park/${park.parkingId}`}>
-                      <ParkItem park={park} />
-                    </Link>
-                  </li>
-                ))
-              )}
-            </ul>
-          </TabsContent>
         </div>
       </Tabs>
-    </div>
+    </>
   );
 }
