@@ -12,9 +12,9 @@ import ParkItem from "@/components/Park/ParkItem";
 import useParkQuery, { ParkDataResponse } from "@/hooks/useParkQuery";
 
 const getParkDataWithId = (data: ParkDataResponse["data"], id: number) => {
-  return Object.values(data)
-    .flat()
-    .find((item) => item.parkingId === id);
+  return data
+    .flatMap(({ parks }) => parks)
+    .find((park) => park.parkingId === id);
 };
 
 export default function ParkPage({
@@ -39,7 +39,7 @@ export default function ParkPage({
   if (isLoading) return <Loading>주차장 정보를 가져오는 중입니다.</Loading>;
   if (!data) return <div>No data available</div>;
 
-  const { data: parkList } = data;
+  const { data: parkList, lastFetchedAt } = data;
   const parkData = getParkDataWithId(parkList, Number(id));
   if (!parkData) notFound();
 
@@ -55,7 +55,7 @@ export default function ParkPage({
         />
         <ParkMap park={parkData} />
         <div className="mb-5">
-          <ParkItem park={parkData} />
+          <ParkItem park={parkData} time={lastFetchedAt} />
         </div>
         <ParkDetail park={parkData} />
       </div>

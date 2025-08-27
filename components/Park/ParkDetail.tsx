@@ -1,4 +1,6 @@
+import { InfoIcon } from "lucide-react";
 import { ParkItem as ParkItemType } from "@/types";
+import Inner from "../Inner";
 import { Separator } from "../ui/separator";
 
 type ParkDetailProps = {
@@ -20,8 +22,9 @@ export default function ParkDetail({ park }: ParkDetailProps) {
   ];
 
   return (
-    <>
-      <h3 className="mb-4 flex items-center text-sm font-medium tracking-tight">
+    <Inner className="px-6">
+      <h3 className="mb-4 flex items-center gap-1.5 text-sm font-medium tracking-tight">
+        <InfoIcon size={16} />
         주차장 정보
       </h3>
       <ul className="space-y-1 text-sm tracking-tight">
@@ -41,6 +44,6 @@ export default function ParkDetail({ park }: ParkDetailProps) {
           </li>
         ))}
       </ul>
-    </>
+    </Inner>
   );
 }

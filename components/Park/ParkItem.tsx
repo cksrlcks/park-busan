@@ -5,6 +5,7 @@ import { ParkingStatus, ParkItem as ParkItemType } from "@/types";
 
 type ParkItemProps = {
   park: ParkItemType;
+  time?: string;
 };
 
 const PARKING_STATUSES: ParkingStatus[] = [
@@ -39,11 +40,11 @@ const getParkingStatus = (
   );
 };
 
-export default function ParkItem({ park }: ParkItemProps) {
+export default function ParkItem({ park, time }: ParkItemProps) {
   const parkingStatus = getParkingStatus(park.parkCount, park.cellCount);
   return (
     <ViewTransition name={`park-${park.parkingId}`}>
-      <div className="flex w-full items-center justify-between rounded-lg border border-gray-100 px-6 py-5 shadow-xs">
+      <div className="flex w-full items-center justify-between rounded-lg border border-gray-100 bg-white px-6 py-5 shadow-xs">
         <div className="flex-1">
           <span
             className={cn(
@@ -58,13 +59,23 @@ export default function ParkItem({ park }: ParkItemProps) {
             {park.addr} {park.addrDetail}
           </p>
         </div>
-        <div
-          className={cn(
-            "text-xl font-bold tracking-tight",
-            parkingStatus.key === "full" ? "text-gray-400" : "",
+        <div className="flex flex-col items-end gap-1">
+          <div
+            className={cn(
+              "text-xl font-bold tracking-tight",
+              parkingStatus.key === "full" ? "text-gray-400" : "",
+            )}
+          >
+            {park.parkCount} / {park.cellCount}
+          </div>
+          {time && (
+            <span className="text-xs text-gray-600">
+              {new Date(time).toLocaleTimeString("ko-KR", {
+                timeZone: "Asia/Seoul",
+              })}{" "}
+              업데이트됨
+            </span>
           )}
-        >
-          {park.parkCount} / {park.cellCount}
         </div>
       </div>
     </ViewTransition>

@@ -3,7 +3,7 @@ import { ParkItem } from "@/types";
 
 export type ParkDataResponse = {
   lastFetchedAt: string;
-  data: Record<string, ParkItem[]>;
+  data: { sigunguName: string; parks: ParkItem[] }[];
 };
 
 export default function useParkQuery() {
@@ -14,7 +14,5 @@ export default function useParkQuery() {
       if (!res.ok) throw new Error("Network error");
       return res.json();
     },
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
   });
 }

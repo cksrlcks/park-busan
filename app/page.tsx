@@ -5,7 +5,7 @@ import StickyProvider from "@/context/StickyProvider";
 export default function Home() {
   return (
     <>
-      <ParkListTitle>부산공영주차장 주차가능 현황</ParkListTitle>
+      <ParkListTitle />
       <StickyProvider>
         <ParkList />
       </StickyProvider>

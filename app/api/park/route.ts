@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ParkItem } from "@/types";
+import { ParkItem, sigunguNames } from "@/types";
 
 export async function GET() {
   try {
@@ -19,17 +19,18 @@ export async function GET() {
 
     const { data } = (await response.json()) as { data: ParkItem[] };
 
-    const grouped = data.reduce<Record<string, ParkItem[]>>((acc, park) => {
-      if (!acc[park.sigunguName]) acc[park.sigunguName] = [];
-      const { gradeInfoList, ...rest } = park;
-      acc[park.sigunguName].push(rest);
-      return acc;
-    }, {});
+    const result = sigunguNames.map((name) => ({
+      sigunguName: name,
+      parks: data
+        .filter((park) => park.sigunguName === name)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .map(({ gradeInfoList, ...rest }) => rest),
+    }));
 
     return NextResponse.json(
       {
         lastFetchedAt: new Date().toISOString(),
-        data: grouped,
+        data: result,
       },
       {
         status: 200,

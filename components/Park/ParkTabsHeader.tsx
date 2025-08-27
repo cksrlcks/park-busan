@@ -1,5 +1,6 @@
 import React from "react";
 import { Map } from "lucide-react";
+import { useFavoriteStore } from "@/app/stores/useFavoriteStore";
 import { useTabStore } from "@/app/stores/useTabStore";
 import { useStickyContext } from "@/context/StickyProvider";
 import { cn } from "@/lib/utils";
@@ -9,7 +10,10 @@ import { Button } from "../ui/button";
 import { TabsList, TabsTrigger } from "../ui/tabs";
 
 type ParkTabsHeaderProps = {
-  tabs: ParkItem["sigunguName"][];
+  tabs: {
+    sigunguName: ParkItem["sigunguName"];
+    parkCount: number;
+  }[];
   isMapView: boolean;
   onToggleMap: () => void;
   lastFetchedAt: string;
@@ -27,6 +31,7 @@ export default function ParkTabsHeader({
 }: ParkTabsHeaderProps) {
   const { isSticky } = useStickyContext();
   const { setLastTab } = useTabStore();
+  const { favorites } = useFavoriteStore();
 
   return (
     <TabsList
@@ -35,14 +40,18 @@ export default function ParkTabsHeader({
         isSticky && "border-b border-gray-100",
       )}
     >
-      {tabs.map((addr) => (
-        <TabsTrigger key={addr} value={addr} onClick={() => setLastTab(addr)}>
-          {addr}
+      {tabs.map(({ sigunguName, parkCount }) => (
+        <TabsTrigger
+          key={sigunguName}
+          value={sigunguName}
+          onClick={() => setLastTab(sigunguName)}
+        >
+          {sigunguName} <b>{parkCount}</b>
         </TabsTrigger>
       ))}
 
       <TabsTrigger value="favorites" onClick={() => setLastTab("favorites")}>
-        즐겨찾기
+        즐겨찾기 <b>{favorites.length}</b>
       </TabsTrigger>
 
       <div className="flex w-full items-center justify-between pt-4">
