@@ -36,24 +36,29 @@ export default function ParkPage({
     }
   };
 
-  const handleShare = async () => {
-    try {
-      await navigator.share({
-        title: "주차검색기",
-        text: "주차검색기",
-        url: window.location.href,
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }
 
   if (isLoading) return <Loading>주차장 정보를 가져오는 중입니다.</Loading>;
   if (!data) return <div>No data available</div>;
 
   const { data: parkList, lastFetchedAt } = data;
   const parkData = getParkDataWithId(parkList, Number(id));
+
   if (!parkData) notFound();
+
+  
+  
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title: `${parkData.parkingName} | 부산광역시 공영주차장 실시간 주차현황`,
+        text: `${parkData.parkingName} 주차장 정보 입니다.`,
+        url: window.location.href,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  
 
   return (
     <ViewTransition>
