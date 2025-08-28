@@ -2,6 +2,7 @@ import React from "react";
 import { unstable_ViewTransition as ViewTransition } from "react";
 import { cn } from "@/lib/utils";
 import { ParkingStatus, ParkItem as ParkItemType } from "@/types";
+import { useConfigStore } from "@/stores/useConfigStore";
 
 type ParkItemProps = {
   park: ParkItemType;
@@ -42,6 +43,12 @@ const getParkingStatus = (
 
 export default function ParkItem({ park, time }: ParkItemProps) {
   const parkingStatus = getParkingStatus(park.parkCount, park.cellCount);
+  const { config } = useConfigStore();
+  const isViewHandicapped = config.isViewHandicapped;
+  const isViewElectric = config.isViewElectric;
+
+  const exceptCellCount = (isViewHandicapped ? park.handicapCellCount : 0) + (isViewElectric ? park.electricCellCount : 0);
+
   return (
     <ViewTransition name={`park-${park.parkingId}`}>
       <div className="flex w-full items-center justify-between rounded-lg border border-gray-100 bg-white px-6 py-5 shadow-xs">
@@ -66,7 +73,7 @@ export default function ParkItem({ park, time }: ParkItemProps) {
               parkingStatus.key === "full" ? "text-gray-400" : "",
             )}
           >
-            {park.parkCount} / {park.cellCount}
+            {park.parkCount - exceptCellCount} / {park.cellCount - exceptCellCount}
           </div>
           {time && (
             <span className="text-xs text-gray-600">

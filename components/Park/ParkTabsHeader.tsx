@@ -1,13 +1,16 @@
 import React from "react";
 import { Map } from "lucide-react";
-import { useFavoriteStore } from "@/app/stores/useFavoriteStore";
-import { useTabStore } from "@/app/stores/useTabStore";
+import { useFavoriteStore } from "@/stores/useFavoriteStore";
+import { useTabStore } from "@/stores/useTabStore";
 import { useStickyContext } from "@/context/StickyProvider";
 import { cn } from "@/lib/utils";
 import { ParkItem } from "@/types";
 import Spinner from "../Spinner";
 import { Button } from "../ui/button";
 import { TabsList, TabsTrigger } from "../ui/tabs";
+import { Label } from "../ui/label";
+import { Checkbox } from "../ui/checkbox";
+import { useConfigStore } from "@/stores/useConfigStore";
 
 type ParkTabsHeaderProps = {
   tabs: {
@@ -32,6 +35,7 @@ export default function ParkTabsHeader({
   const { isSticky } = useStickyContext();
   const { setLastTab } = useTabStore();
   const { favorites } = useFavoriteStore();
+  const { config, setConfig } = useConfigStore();
 
   return (
     <TabsList
@@ -86,6 +90,27 @@ export default function ParkTabsHeader({
             timeZone: "Asia/Seoul",
           })}
         </div>
+      </div>
+
+      <div className="flex items-center gap-4 pt-3">
+        <Label>
+          <Checkbox
+            defaultChecked={config.isViewElectric}
+            onClick={() =>
+              setConfig({ ...config, isViewElectric: !config.isViewElectric })
+            }
+          />
+          전기차 구역 제외
+        </Label>
+        <Label>
+          <Checkbox
+            defaultChecked={config.isViewHandicapped}
+            onClick={() =>
+              setConfig({ ...config, isViewHandicapped: !config.isViewHandicapped })
+            }
+          />
+          장애인 구역 제외
+        </Label>
       </div>
     </TabsList>
   );

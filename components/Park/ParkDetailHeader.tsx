@@ -1,6 +1,6 @@
 import Link from "next/link";
 import clsx from "clsx";
-import { ChevronLeftIcon, RefreshCwIcon, Star } from "lucide-react";
+import { ChevronLeftIcon, RefreshCwIcon, Share2, Star } from "lucide-react";
 import Spinner from "../Spinner";
 import { Button } from "../ui/button";
 
@@ -9,6 +9,7 @@ type ParkHeaderProps = {
   isFavorite: boolean;
   onFavorite: () => void;
   onRefetch: () => void;
+  onShare: () => void;
   isFetching: boolean;
 };
 
@@ -17,6 +18,7 @@ export default function ParkHeader({
   isFavorite,
   onFavorite,
   onRefetch,
+  onShare,
   isFetching,
 }: ParkHeaderProps) {
   return (
@@ -54,6 +56,9 @@ export default function ParkHeader({
           ) : (
             <RefreshCwIcon />
           )}
+        </Button>
+        <Button type="button" variant="outline" size="icon" onClick={onShare}>
+          <Share2 />
         </Button>
       </div>
     </div>

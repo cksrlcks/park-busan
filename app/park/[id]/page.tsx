@@ -3,7 +3,7 @@
 import { use } from "react";
 import { unstable_ViewTransition as ViewTransition } from "react";
 import { notFound } from "next/navigation";
-import { useFavoriteStore } from "@/app/stores/useFavoriteStore";
+import { useFavoriteStore } from "@/stores/useFavoriteStore";
 import Loading from "@/components/Loading";
 import ParkMap from "@/components/Map/ParkMap";
 import ParkDetail from "@/components/Park/ParkDetail";
@@ -36,6 +36,18 @@ export default function ParkPage({
     }
   };
 
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title: "주차검색기",
+        text: "주차검색기",
+        url: window.location.href,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   if (isLoading) return <Loading>주차장 정보를 가져오는 중입니다.</Loading>;
   if (!data) return <div>No data available</div>;
 
@@ -51,6 +63,7 @@ export default function ParkPage({
           isFavorite={isFavorite}
           onFavorite={() => handleFavorite(Number(id))}
           onRefetch={refetch}
+          onShare={handleShare}
           isFetching={isFetching}
         />
         <ParkMap park={parkData} />

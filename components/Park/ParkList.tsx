@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { useFavoriteStore } from "@/app/stores/useFavoriteStore";
-import { useTabStore } from "@/app/stores/useTabStore";
+import { useFavoriteStore } from "@/stores/useFavoriteStore";
+import { useTabStore } from "@/stores/useTabStore";
 import ParkItem from "@/components/Park/ParkItem";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import useParkQuery from "@/hooks/useParkQuery";
