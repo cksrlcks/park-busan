@@ -73,7 +73,7 @@ export default function ParkItem({ park, time }: ParkItemProps) {
               parkingStatus.key === "full" ? "text-gray-400" : "",
             )}
           >
-            {park.parkCount - exceptCellCount} / {park.cellCount - exceptCellCount}
+            {Math.max(park.parkCount - exceptCellCount, 0)} / {Math.max(park.cellCount - exceptCellCount, 0)}
           </div>
           {time && (
             <span className="text-xs text-gray-600">
